@@ -1,4 +1,19 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Usuarios de prueba - FakeStore API
+
+| Usuario      | Contraseña |
+|--------------|------------|
+| johnd        | m38rmF$    |
+| mor_2314     | 83r5^_     |
+| kevinryan    | kev02937@  |
+| donero       | ewedon     |
+| derek        | jklg*_56   |
+| david_r      | 3478*#54   |
+| snyder       | f238*#k6   |
+| miriam       | cHBl3K     |
+| pclark       | vpSa8C     |
+| nicholas.rau | eMDeSS     |
+
+---
 
 # Getting Started
 
