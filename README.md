@@ -64,40 +64,8 @@ npm install axios
 
 ---
 
-## Paso 3 — Estructura del proyecto
 
-Se organizó el proyecto con la siguiente estructura de carpetas:
-
-```
-fakestore/
-├── App.tsx                        # Componente raíz, navegación y control de sesión
-├── localStorage/
-│   └── NativeLocalStorage.tsx     # Spec del módulo nativo TurboModules
-├── android/app/src/main/java/com/fakestore/
-│   └── NativeLocalStorageModule.kt  # Implementación nativa con SharedPreferences
-└── src/
-    ├── components/
-    │   ├── Store.ts               # Configuración del store de Redux
-    │   ├── types.ts               # Tipos TypeScript compartidos
-    │   ├── config/
-    │   │   └── config.ts          # Constantes globales (URL del API, nombre)
-    │   ├── actions/
-    │   │   ├── CartActionTypes.ts # Constantes de tipos de acción
-    │   │   └── CartAction.ts      # Action creators del carrito
-    │   └── reducers/
-    │       └── CartReducer.ts     # Reducer del carrito de compras
-    ├── styles/
-    │   └── style_01.tsx           # Hoja de estilos centralizada
-    └── views/
-        ├── Login.tsx              # Pantalla de inicio de sesión
-        ├── Home.tsx               # Catálogo de productos con filtro por categoría
-        ├── ProductDetail.tsx      # Detalle del producto seleccionado
-        └── Cart.tsx               # Carrito de compras
-```
-
----
-
-## Paso 4 — Módulo NativeLocalStorage
+## Paso 3 — Módulo NativeLocalStorage
 
 Para el almacenamiento local se implementó un módulo nativo usando **TurboModules** de React Native, que internamente usa **SharedPreferences** de Android.
 
@@ -121,7 +89,7 @@ Y su implementación nativa en Kotlin (`NativeLocalStorageModule.kt`) usando `Sh
 
 ---
 
-## Paso 5 — Configuración de Redux
+## Paso 4 — Configuración de Redux
 
 Se configuró el store global con un único reducer para el carrito:
 
@@ -138,7 +106,7 @@ El reducer maneja cinco acciones: `ADD_TO_CART`, `REMOVE_FROM_CART`, `UPDATE_QUA
 
 ---
 
-## Paso 6 — Pantalla de Login
+## Paso 5 — Pantalla de Login
 
 Se desarrolló la pantalla de autenticación que realiza una petición `POST /auth/login` con Axios al API de FakeStore. Al autenticarse correctamente, el token y el username se guardan en el localStorage nativo.
 
@@ -148,7 +116,7 @@ Se desarrolló la pantalla de autenticación que realiza una petición `POST /au
 
 ---
 
-## Paso 7 — Pantalla Home (pasarela de productos)
+## Paso 6 — Pantalla Home (pasarela de productos)
 
 Se implementó la pantalla principal que carga el catálogo de productos desde `GET /products` y las categorías desde `GET /products/categories`. El usuario puede filtrar tocando cualquier categoría del menú horizontal.
 
@@ -160,7 +128,7 @@ El componente se conectó al store de Redux con `connect()` para mostrar en tiem
 
 ---
 
-## Paso 8 — Pantalla de Detalle del Producto
+## Paso 7 — Pantalla de Detalle del Producto
 
 Al tocar un producto en Home, se navega a esta pantalla pasando el objeto producto por parámetros de React Navigation. Se muestra la imagen, categoría, título, precio, descripción y calificación del producto.
 
@@ -176,7 +144,7 @@ El botón **"Agregar al Carrito"** despacha la acción `addToCartAction` al stor
 
 ---
 
-## Paso 9 — Pantalla del Carrito de Compras
+## Paso 8 — Pantalla del Carrito de Compras
 
 Se implementó la pantalla del carrito que muestra:
 
@@ -198,30 +166,12 @@ Cada vez que cambia el estado de Redux, el carrito se guarda automáticamente en
 
 ---
 
-## Paso 10 — Navegación y control de sesión (App.tsx)
+## Paso 9 — Navegación y control de sesión (App.tsx)
 
 Se configuró el stack de navegación con React Navigation y el Provider de Redux. Al iniciar la app se verifica si existe un token guardado localmente; si existe, se restaura también el carrito guardado y se lleva al usuario directamente a Home sin pasar por Login.
 
 ---
 
-## Cómo ejecutar la aplicación
-
-1. Clonar el repositorio e instalar dependencias:
-```bash
-npm install
-```
-
-2. Iniciar Metro:
-```bash
-npm start
-```
-
-3. En otra terminal, compilar y ejecutar en Android:
-```bash
-npm run android
-```
-
----
 
 ## Usuarios de prueba
 
