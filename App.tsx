@@ -1,3 +1,9 @@
+/**
+ * App.tsx
+ * Componente raíz de la aplicación. Maneja la sesión del usuario
+ * verificando el token guardado localmente y configura la navegación con Redux.
+ */
+
 import React, { useState } from 'react';
 import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -14,13 +20,17 @@ import ProductDetail from './src/views/ProductDetail';
 import Cart from './src/views/Cart';
 
 const Stack = createNativeStackNavigator();
+
+// El store se crea fuera del componente para no recrearlo en cada render
 const store = ConfigureStore();
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+    // Al iniciar la app se verifica si hay una sesión activa guardada localmente
     React.useEffect(() => {
         const token = NativeLocalStorage?.getItem('token');
+        // getItem retorna el string "null" cuando no existe, por eso la doble verificación
         if (token && token !== 'null' && token.length > 0) {
             const savedCart = NativeLocalStorage?.getItem('cart');
             if (savedCart && savedCart !== 'null' && savedCart !== '[]') {

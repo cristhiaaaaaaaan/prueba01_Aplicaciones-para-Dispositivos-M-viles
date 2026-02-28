@@ -1,8 +1,17 @@
+/**
+ * style_01.tsx
+ * Hoja de estilos centralizada de la aplicación Fake Store.
+ * Se usa una paleta de colores consistente basada en tonos morados
+ * y se calcula el ancho de las tarjetas según el tamaño de pantalla del dispositivo.
+ */
+
 import { Dimensions, StyleSheet } from 'react-native';
 
+// Ancho de cada tarjeta para la grilla de 2 columnas en Home
 const { width } = Dimensions.get('window');
 const cardWidth = (width - 32) / 2;
 
+// Paleta de colores de la aplicación
 const morado = '#6B2D6B';
 const morado_claro = '#9B59B6';
 const blanco = '#FFFFFF';
@@ -87,7 +96,7 @@ const style_01 = StyleSheet.create({
         fontWeight: 'bold',
     },
 
-    // ── HOME HEADER ────────────────────────────────────
+    // ── HOME ────────────────────────────────────────────
     header: {
         backgroundColor: blanco,
         flexDirection: 'row',
@@ -119,6 +128,7 @@ const style_01 = StyleSheet.create({
     cartBtnText: {
         fontSize: 24,
     },
+    // Badge sobre el ícono del carrito que muestra la cantidad de artículos
     cartBadge: {
         position: 'absolute',
         top: 2,
@@ -135,8 +145,6 @@ const style_01 = StyleSheet.create({
         fontSize: 10,
         fontWeight: 'bold',
     },
-
-    // ── CATEGORIES ─────────────────────────────────────
     categoryContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -174,8 +182,6 @@ const style_01 = StyleSheet.create({
         color: blanco,
         fontWeight: 'bold',
     },
-
-    // ── PRODUCTS GRID ──────────────────────────────────
     productCard: {
         backgroundColor: blanco,
         borderRadius: 10,
@@ -202,8 +208,6 @@ const style_01 = StyleSheet.create({
         fontWeight: 'bold',
         color: morado,
     },
-
-    // ── FOOTER ─────────────────────────────────────────
     footer: {
         backgroundColor: morado,
         paddingVertical: 12,
@@ -226,7 +230,7 @@ const style_01 = StyleSheet.create({
         fontWeight: 'bold',
     },
 
-    // ── DETAIL HEADER ──────────────────────────────────
+    // ── DETALLE / CARRITO - Header compartido ───────────
     detailHeader: {
         backgroundColor: morado,
         flexDirection: 'row',
@@ -435,7 +439,7 @@ const style_01 = StyleSheet.create({
         fontWeight: 'bold',
     },
 
-    // ── SHARED ─────────────────────────────────────────
+    // ── COMPARTIDO ──────────────────────────────────────
     container: {
         flex: 1,
         backgroundColor: gris_claro,

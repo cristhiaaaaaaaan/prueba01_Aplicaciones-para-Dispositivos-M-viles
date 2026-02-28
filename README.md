@@ -1,112 +1,234 @@
-# Usuarios de prueba - FakeStore API
+# Fake Store - Primera Prueba Parcial
 
-| Usuario      | Contraseña |
-|--------------|------------|
-| johnd        | m38rmF$    |
-| mor_2314     | 83r5^_     |
-| kevinryan    | kev02937@  |
-| donero       | ewedon     |
-| derek        | jklg*_56   |
-| david_r      | 3478*#54   |
-| snyder       | f238*#k6   |
-| miriam       | cHBl3K     |
-| pclark       | vpSa8C     |
-| nicholas.rau | eMDeSS     |
+Aplicación móvil desarrollada con React Native que consume el API de [FakeStore](https://fakestoreapi.com) para simular una tienda virtual. Permite autenticar usuarios, explorar productos, filtrar por categoría y gestionar un carrito de compras con persistencia local.
+
+**Desarrollada por:** Cristian Aguilar Cerna
 
 ---
 
-# Getting Started
+## Tecnologías utilizadas
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+| Tecnología | Versión | Uso |
+|---|---|---|
+| React Native | 0.83.0 | Framework principal |
+| TypeScript | 5.8.3 | Tipado estático |
+| Redux | 5.0.1 | Manejo de estado global (carrito) |
+| React Redux | 9.2.0 | Conexión de Redux con componentes |
+| Axios | 1.13.5 | Peticiones HTTP al API |
+| React Navigation | 7.x | Navegación entre pantallas |
+| NativeLocalStorage | - | Módulo nativo con SharedPreferences |
 
-## Step 1: Start Metro
+---
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## Requisitos previos
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+- Node.js >= 20
+- Android Studio con un AVD configurado (o dispositivo físico)
+- JDK 17
+- React Native CLI instalado globalmente
 
-```sh
-# Using npm
-npm start
+---
 
-# OR using Yarn
-yarn start
+## Paso 1 — Crear el proyecto
+
+Se creó el proyecto usando React Native CLI con la plantilla de TypeScript:
+
+```bash
+npx @react-native-community/cli init fakestore --template react-native-template-typescript
+cd fakestore
 ```
 
-## Step 2: Build and run your app
+Una vez creado el proyecto, se abrió el emulador de Android y se ejecutó con:
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
+```bash
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
-### iOS
+---
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+## Paso 2 — Instalación de dependencias
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+Se instalaron las librerías necesarias para navegación, estado global y peticiones HTTP:
 
-```sh
-bundle install
+```bash
+# Navegación
+npm install @react-navigation/native @react-navigation/native-stack
+npm install react-native-screens react-native-safe-area-context
+
+# Redux
+npm install redux react-redux
+
+# Axios para el consumo del API
+npm install axios
 ```
 
-Then, and every time you update your native dependencies, run:
+---
 
-```sh
-bundle exec pod install
+## Paso 3 — Estructura del proyecto
+
+Se organizó el proyecto con la siguiente estructura de carpetas:
+
+```
+fakestore/
+├── App.tsx                        # Componente raíz, navegación y control de sesión
+├── localStorage/
+│   └── NativeLocalStorage.tsx     # Spec del módulo nativo TurboModules
+├── android/app/src/main/java/com/fakestore/
+│   └── NativeLocalStorageModule.kt  # Implementación nativa con SharedPreferences
+└── src/
+    ├── components/
+    │   ├── Store.ts               # Configuración del store de Redux
+    │   ├── types.ts               # Tipos TypeScript compartidos
+    │   ├── config/
+    │   │   └── config.ts          # Constantes globales (URL del API, nombre)
+    │   ├── actions/
+    │   │   ├── CartActionTypes.ts # Constantes de tipos de acción
+    │   │   └── CartAction.ts      # Action creators del carrito
+    │   └── reducers/
+    │       └── CartReducer.ts     # Reducer del carrito de compras
+    ├── styles/
+    │   └── style_01.tsx           # Hoja de estilos centralizada
+    └── views/
+        ├── Login.tsx              # Pantalla de inicio de sesión
+        ├── Home.tsx               # Catálogo de productos con filtro por categoría
+        ├── ProductDetail.tsx      # Detalle del producto seleccionado
+        └── Cart.tsx               # Carrito de compras
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+---
 
-```sh
-# Using npm
-npm run ios
+## Paso 4 — Módulo NativeLocalStorage
 
-# OR using Yarn
-yarn ios
+Para el almacenamiento local se implementó un módulo nativo usando **TurboModules** de React Native, que internamente usa **SharedPreferences** de Android.
+
+Se creó la especificación en `localStorage/NativeLocalStorage.tsx`:
+
+```typescript
+import type { TurboModule } from 'react-native';
+import { TurboModuleRegistry } from 'react-native';
+
+export interface Spec extends TurboModule {
+    getItem(key: string): string | null;
+    setItem(key: string, value: string): void;
+    removeItem(key: string): void;
+    clear(): void;
+}
+
+export default TurboModuleRegistry.getEnforcing<Spec>('NativeLocalStorage');
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+Y su implementación nativa en Kotlin (`NativeLocalStorageModule.kt`) usando `SharedPreferences` para persistir datos como el token y el carrito.
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+---
 
-## Step 3: Modify your app
+## Paso 5 — Configuración de Redux
 
-Now that you have successfully run the app, let's make changes!
+Se configuró el store global con un único reducer para el carrito:
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+**`src/components/Store.ts`**
+```typescript
+const ConfigureStore = () => {
+    const reducers = combineReducers({ Cart: CartReducer });
+    const store = legacy_createStore(reducers);
+    return store;
+};
+```
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+El reducer maneja cinco acciones: `ADD_TO_CART`, `REMOVE_FROM_CART`, `UPDATE_QUANTITY`, `CLEAR_CART` y `LOAD_CART`.
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+---
 
-## Congratulations! :tada:
+## Paso 6 — Pantalla de Login
 
-You've successfully run and modified your React Native App. :partying_face:
+Se desarrolló la pantalla de autenticación que realiza una petición `POST /auth/login` con Axios al API de FakeStore. Al autenticarse correctamente, el token y el username se guardan en el localStorage nativo.
 
-### Now what?
+![Pantalla de Login](./screenshots/login.png)
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+*Pantalla de inicio de sesión con campos de usuario y contraseña.*
 
-# Troubleshooting
+---
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+## Paso 7 — Pantalla Home (pasarela de productos)
 
-# Learn More
+Se implementó la pantalla principal que carga el catálogo de productos desde `GET /products` y las categorías desde `GET /products/categories`. El usuario puede filtrar tocando cualquier categoría del menú horizontal.
 
-To learn more about React Native, take a look at the following resources:
+El componente se conectó al store de Redux con `connect()` para mostrar en tiempo real la cantidad de artículos en el badge del carrito.
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+![Home con categoría Electronics seleccionada](./screenshots/home-electronics.png)
+
+*Pantalla Home con la categoría Electronics seleccionada y los productos filtrados.*
+
+---
+
+## Paso 8 — Pantalla de Detalle del Producto
+
+Al tocar un producto en Home, se navega a esta pantalla pasando el objeto producto por parámetros de React Navigation. Se muestra la imagen, categoría, título, precio, descripción y calificación del producto.
+
+El botón **"Agregar al Carrito"** despacha la acción `addToCartAction` al store de Redux. Si el producto ya estaba en el carrito, el reducer incrementa su cantidad automáticamente.
+
+![Detalle del producto](./screenshots/product-detail.png)
+
+*Pantalla de detalle mostrando toda la información del producto.*
+
+![Diálogo al agregar al carrito](./screenshots/add-to-cart.png)
+
+*Diálogo de confirmación al agregar un producto al carrito.*
+
+---
+
+## Paso 9 — Pantalla del Carrito de Compras
+
+Se implementó la pantalla del carrito que muestra:
+
+- Imagen y nombre de cada producto
+- Precio individual
+- Controles `+` / `-` para ajustar la cantidad (si llega a 0 el producto se elimina)
+- Subtotal por producto
+- Gran total al final de la lista
+
+Cada vez que cambia el estado de Redux, el carrito se guarda automáticamente en localStorage con `useEffect`, de modo que persiste aunque la app se cierre.
+
+![Carrito de compras con productos](./screenshots/cart.png)
+
+*Carrito con tres productos, subtotales y gran total.*
+
+![Pago exitoso](./screenshots/pago-exitoso.png)
+
+*Mensaje de confirmación al completar el pago.*
+
+---
+
+## Paso 10 — Navegación y control de sesión (App.tsx)
+
+Se configuró el stack de navegación con React Navigation y el Provider de Redux. Al iniciar la app se verifica si existe un token guardado localmente; si existe, se restaura también el carrito guardado y se lleva al usuario directamente a Home sin pasar por Login.
+
+---
+
+## Cómo ejecutar la aplicación
+
+1. Clonar el repositorio e instalar dependencias:
+```bash
+npm install
+```
+
+2. Iniciar Metro:
+```bash
+npm start
+```
+
+3. En otra terminal, compilar y ejecutar en Android:
+```bash
+npm run android
+```
+
+---
+
+## Usuarios de prueba
+
+| Usuario | Contraseña |
+|---|---|
+| mor_2314 | 83r5^_ |
+| johnd | m38rmF$ |
+| kevinryan | kev02937@ |
+| donero | ewedon |
+| derek | jklg*_56 |

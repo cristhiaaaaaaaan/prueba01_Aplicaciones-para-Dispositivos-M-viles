@@ -1,3 +1,9 @@
+/**
+ * CartReducer.ts
+ * Reducer del carrito de compras. Gestiona el estado de los artículos
+ * respondiendo a cada acción despachada desde los componentes.
+ */
+
 import { ADD_TO_CART, REMOVE_FROM_CART, UPDATE_QUANTITY, CLEAR_CART, LOAD_CART } from '../actions/CartActionTypes';
 import { CartItem, Product } from '../types';
 
@@ -11,10 +17,12 @@ const INITIAL_STATE: CartState = {
 
 const CartReducer = (state: CartState = INITIAL_STATE, action: any): CartState => {
     switch (action.type) {
+
         case ADD_TO_CART: {
             const product: Product = action.payload;
             const existing = state.items.find(item => item.id === product.id);
             if (existing) {
+                // Si el producto ya está en el carrito solo incrementa la cantidad
                 return {
                     items: state.items.map(item =>
                         item.id === product.id
@@ -35,6 +43,7 @@ const CartReducer = (state: CartState = INITIAL_STATE, action: any): CartState =
 
         case UPDATE_QUANTITY: {
             const { productId, quantity } = action.payload;
+            // Si la cantidad baja a 0 o menos, se elimina el producto del carrito
             if (quantity <= 0) {
                 return {
                     items: state.items.filter(item => item.id !== productId),

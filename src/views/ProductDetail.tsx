@@ -1,3 +1,9 @@
+/**
+ * ProductDetail.tsx
+ * Pantalla de detalle de un producto. Muestra toda la información del producto
+ * recibido por parámetros de navegación y permite agregarlo al carrito con Redux.
+ */
+
 import React from 'react';
 import {
     View,
@@ -27,6 +33,10 @@ const ProductDetail = ({ navigation, route }: ProductDetailProps) => {
     const { product } = route.params;
     const dispatch = useDispatch();
 
+    /**
+     * Despacha la acción para agregar el producto al carrito.
+     * Si el producto ya existe, el reducer incrementa su cantidad.
+     */
     const onAddToCart = () => {
         dispatch(addToCartAction(product));
         Alert.alert(
@@ -65,6 +75,7 @@ const ProductDetail = ({ navigation, route }: ProductDetailProps) => {
                 <Text style={style_01.detailTitle}>{product.title}</Text>
                 <Text style={style_01.detailPrice}>${product.price.toFixed(2)}</Text>
                 <Text style={style_01.detailDescription}>{product.description}</Text>
+                {/* El rating es opcional en la respuesta del API */}
                 {product.rating && (
                     <Text style={style_01.detailRating}>
                         ⭐ {product.rating.rate} ({product.rating.count} reseñas)

@@ -1,3 +1,11 @@
+/**
+ * Cart.tsx
+ * Pantalla del carrito de compras. Muestra los productos agregados con su
+ * precio individual, cantidad, subtotal y el gran total. Permite modificar
+ * cantidades, eliminar productos, cancelar o confirmar el pago.
+ * Cada cambio en los items se sincroniza automáticamente con localStorage.
+ */
+
 import React, { useEffect } from 'react';
 import {
     View,
@@ -30,6 +38,7 @@ const Cart = ({ navigation, Cart: cartState }: CartProps) => {
     const dispatch = useDispatch();
     const { items } = cartState;
 
+    // Persiste el carrito en localStorage cada vez que cambia el estado de Redux
     useEffect(() => {
         NativeLocalStorage?.setItem(JSON.stringify(items), 'cart');
     }, [items]);
@@ -43,6 +52,10 @@ const Cart = ({ navigation, Cart: cartState }: CartProps) => {
         dispatch(removeFromCartAction(id));
     };
 
+    /**
+     * Actualiza la cantidad de un producto. Si llega a 0,
+     * el reducer lo elimina automáticamente del carrito.
+     */
     const onUpdateQty = (id: number, qty: number) => {
         dispatch(updateQuantityAction(id, qty));
     };
@@ -152,7 +165,7 @@ const Cart = ({ navigation, Cart: cartState }: CartProps) => {
                 />
             )}
 
-            {/* Total y botones */}
+            {/* Total y botones de acción */}
             <View style={style_01.cartFooter}>
                 <Text style={style_01.grandTotal}>
                     Total: ${grandTotal.toFixed(2)}

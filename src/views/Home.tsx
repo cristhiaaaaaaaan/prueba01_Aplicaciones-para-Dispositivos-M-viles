@@ -1,3 +1,10 @@
+/**
+ * Home.tsx
+ * Pantalla principal (pasarela de productos). Carga el catálogo desde el API
+ * con Axios y permite filtrar por categoría. Muestra el badge del carrito
+ * con la cantidad de artículos agregados usando el estado de Redux.
+ */
+
 import React, { useState, useEffect } from 'react';
 import {
     View,
@@ -34,6 +41,7 @@ const Home = ({ navigation, Cart }: HomeProps) => {
         loadProducts(null);
     }, []);
 
+    /** Obtiene las categorías del API y agrega "all" al inicio */
     const loadCategories = async () => {
         try {
             const response = await axios.get(`${BASEURL}/products/categories`);
@@ -43,6 +51,10 @@ const Home = ({ navigation, Cart }: HomeProps) => {
         }
     };
 
+    /**
+     * Carga productos del API. Si se pasa una categoría usa el endpoint de filtrado,
+     * si no, trae todos los productos disponibles.
+     */
     const loadProducts = async (category: string | null) => {
         setLoading(true);
         try {
@@ -68,6 +80,7 @@ const Home = ({ navigation, Cart }: HomeProps) => {
         navigation.navigate('ProductDetail', { product });
     };
 
+    // Total de artículos para el badge del carrito
     const cartCount = Cart.items.reduce((sum, item) => sum + item.quantity, 0);
 
     const renderProduct = ({ item }: { item: Product }) => (
@@ -105,7 +118,7 @@ const Home = ({ navigation, Cart }: HomeProps) => {
                 </TouchableOpacity>
             </View>
 
-            {/* Categorías */}
+            {/* Filtro de categorías */}
             <View style={style_01.categoryContainer}>
                 <Text style={style_01.categoryLabel}>Categoría:</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -129,7 +142,6 @@ const Home = ({ navigation, Cart }: HomeProps) => {
                 </ScrollView>
             </View>
 
-            {/* Productos */}
             {loading ? (
                 <ActivityIndicator size="large" color="#6B2D6B" style={{ flex: 1 }} />
             ) : (
@@ -142,7 +154,7 @@ const Home = ({ navigation, Cart }: HomeProps) => {
                 />
             )}
 
-            {/* Footer */}
+            {/* Footer con información del examen */}
             <View style={style_01.footer}>
                 <Text style={style_01.footerTitle}>{EXAM_TITLE}</Text>
                 <Text style={style_01.footerSubText}>Desarrollada por:</Text>
@@ -153,6 +165,7 @@ const Home = ({ navigation, Cart }: HomeProps) => {
     );
 };
 
+// Se conecta al store de Redux para leer el estado del carrito
 const mapStateToProps = ({ Cart }: any) => ({ Cart });
 
 export default connect(mapStateToProps)(Home);

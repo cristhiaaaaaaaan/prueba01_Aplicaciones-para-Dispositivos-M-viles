@@ -1,3 +1,9 @@
+/**
+ * Login.tsx
+ * Pantalla de inicio de sesión. Autentica al usuario contra el API de FakeStore
+ * y guarda el token y el username en el localStorage nativo al ingresar.
+ */
+
 import React, { useState } from 'react';
 import {
     View,
@@ -23,6 +29,10 @@ const Login = ({ onLogin }: LoginProps) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
+    /**
+     * Realiza la petición POST al API para autenticar al usuario.
+     * Si tiene éxito, guarda el token y el username en localStorage y notifica al padre.
+     */
     const handleLogin = async () => {
         if (!username || !password) {
             setError('Por favor ingrese usuario y contraseña.');
